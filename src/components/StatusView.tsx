@@ -1,4 +1,7 @@
+import { useState } from "react"
 import { BasketPhoto } from "@/components/BasketPhoto"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import type { Registration } from "@/types"
 
 interface StatusViewProps {
@@ -9,64 +12,82 @@ interface StatusViewProps {
 }
 
 export function StatusView({ qrId, registration, onRegister, onRetrieve }: StatusViewProps) {
-  if (registration) {
-    return (
-      <div className="flex min-h-svh flex-col items-center px-4 py-8">
-        <header className="mb-6 flex w-full max-w-md items-center justify-between">
-          <h1 className="text-xl font-bold">빨래큐</h1>
-          <span className="text-sm text-muted-foreground">QR #{qrId}</span>
-        </header>
+  const [confirmRetrieve, setConfirmRetrieve] = useState(false)
 
-        <div className="w-full max-w-md space-y-6">
-          <div className="space-y-1 text-center">
-            <div className="inline-block rounded-full bg-green-100 px-3 py-1 text-sm text-green-700">
-              현재 사용 중이에요
-            </div>
-            <p className="text-lg font-medium">"{registration.nickname}"님의 세탁물이에요</p>
-          </div>
-
-          <BasketPhoto imageUrl={registration.image_url} />
-
-          <div className="space-y-3">
-            <button
-              onClick={onRegister}
-              className="w-full rounded-lg bg-primary px-4 py-3 font-medium text-primary-foreground"
-            >
-              내 세탁물 등록하기
-            </button>
-            <button
-              onClick={onRetrieve}
-              className="w-full rounded-lg border border-border px-4 py-3 font-medium"
-            >
-              세탁물 회수 완료
-            </button>
-          </div>
-        </div>
-      </div>
-    )
+  function handleRetrieveClick() {
+    if (confirmRetrieve) {
+      onRetrieve()
+      setConfirmRetrieve(false)
+    } else {
+      setConfirmRetrieve(true)
+    }
   }
 
   return (
-    <div className="flex min-h-svh flex-col items-center px-4 py-8">
+    <div className="flex min-h-svh flex-col items-center bg-background px-4 py-6">
       <header className="mb-6 flex w-full max-w-md items-center justify-between">
-        <h1 className="text-xl font-bold">빨래큐</h1>
-        <span className="text-sm text-muted-foreground">QR #{qrId}</span>
+        <h1 className="text-xl font-bold tracking-tight">빨래큐</h1>
+        <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+          #{qrId}
+        </span>
       </header>
 
-      <div className="w-full max-w-md space-y-6">
-        <div className="text-center">
-          <div className="inline-block rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-600">
-            지금 사용할 수 있어요!
-          </div>
-        </div>
+      <Card className="w-full max-w-md">
+        <CardContent className="space-y-5 p-5">
+          {registration ? (
+            <>
+              <div className="space-y-2 text-center">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-sm font-medium text-green-700">
+                  <span className="h-2 w-2 rounded-full bg-green-500" aria-hidden="true" />
+                  현재 사용 중이에요
+                </span>
+                <p className="text-lg font-semibold text-pretty">
+                  &ldquo;{registration.nickname}&rdquo;님의 세탁물이에요
+                </p>
+              </div>
 
-        <button
-          onClick={onRegister}
-          className="w-full rounded-lg bg-primary px-4 py-3 font-medium text-primary-foreground"
-        >
-          내 세탁물 등록하기
-        </button>
-      </div>
+              <BasketPhoto imageUrl={registration.image_url} />
+
+              <div className="space-y-2.5">
+                <Button onClick={onRegister} className="w-full" size="lg">
+                  내 세탁물 등록하기
+                </Button>
+                <Button
+                  onClick={handleRetrieveClick}
+                  variant={confirmRetrieve ? "destructive" : "outline"}
+                  className="w-full"
+                  size="lg"
+                >
+                  {confirmRetrieve ? "정말 회수 완료할까요?" : "세탁물 회수 완료"}
+                </Button>
+                {confirmRetrieve ? (
+                  <Button
+                    onClick={() => setConfirmRetrieve(false)}
+                    variant="ghost"
+                    className="w-full"
+                    size="sm"
+                  >
+                    취소
+                  </Button>
+                ) : null}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="py-8 text-center">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-sm font-medium text-muted-foreground">
+                  <span className="h-2 w-2 rounded-full bg-gray-400" aria-hidden="true" />
+                  지금 사용할 수 있어요!
+                </span>
+              </div>
+
+              <Button onClick={onRegister} className="w-full" size="lg">
+                내 세탁물 등록하기
+              </Button>
+            </>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
