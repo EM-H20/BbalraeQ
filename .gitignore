@@ -26,3 +26,11 @@ dist-ssr
 # env files
 .env
 .env.*.local
+
+# ====================================================================
+# SUH-DEVOPS-TEMPLATE: Auto-added entries
+# ====================================================================
+/.claude/settings.local.json
+/.report
+/.issue
+.agents
