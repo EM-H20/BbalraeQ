@@ -7,5 +7,9 @@ const OPTIONS = {
 } as const
 
 export async function compressImage(file: File): Promise<File> {
-  return imageCompression(file, OPTIONS)
+  try {
+    return await imageCompression(file, OPTIONS)
+  } catch {
+    return file
+  }
 }

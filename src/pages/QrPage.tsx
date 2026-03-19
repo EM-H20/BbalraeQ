@@ -1,12 +1,16 @@
 import { useState, useEffect, useCallback } from "react"
 import { useParams } from "react-router-dom"
 import { supabase } from "@/utils/supabase"
+import { deleteRegistration } from "@/lib/utils"
 import { StatusView } from "@/components/StatusView"
 import { RegisterForm } from "@/components/RegisterForm"
 import { SuccessMessage } from "@/components/SuccessMessage"
 import type { Registration } from "@/types"
 
 type View = "status" | "register" | "success"
+
+const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000
+const SUCCESS_REDIRECT_MS = 2000
 
 export function QrPage() {
   const { qrId } = useParams<{ qrId: string }>()
@@ -26,16 +30,9 @@ export function QrPage() {
     // 24시간 만료 체크: 조회 시점에 자동 삭제
     if (data) {
       const elapsed = Date.now() - new Date(data.created_at).getTime()
-      const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000
 
       if (elapsed > TWENTY_FOUR_HOURS) {
-        const path = new URL(data.image_url).pathname.split("/baskets/")[1]
-        await Promise.all([
-          path
-            ? supabase.storage.from("baskets").remove([decodeURIComponent(path)])
-            : Promise.resolve(),
-          supabase.from("registrations").delete().eq("qr_id", qrId),
-        ])
+        await deleteRegistration(qrId, data.image_url)
         setRegistration(null)
         setLoading(false)
         return
@@ -53,15 +50,12 @@ export function QrPage() {
   async function handleRetrieve() {
     if (!qrId || !registration) return
 
-    // async-parallel: Storage 삭제 + DB 삭제 병렬 실행
-    const path = new URL(registration.image_url).pathname.split("/baskets/")[1]
-    await Promise.all([
-      path
-        ? supabase.storage.from("baskets").remove([decodeURIComponent(path)])
-        : Promise.resolve(),
-      supabase.from("registrations").delete().eq("qr_id", qrId),
-    ])
-    setRegistration(null)
+    try {
+      await deleteRegistration(qrId, registration.image_url)
+      setRegistration(null)
+    } catch (err) {
+      console.error("회수 실패:", err)
+    }
   }
 
   function handleRegisterSuccess() {
@@ -69,7 +63,7 @@ export function QrPage() {
     setTimeout(() => {
       setView("status")
       fetchRegistration()
-    }, 2000)
+    }, SUCCESS_REDIRECT_MS)
   }
 
   if (loading) {

@@ -1,6 +1,7 @@
 import { useState, useRef } from "react"
 import { supabase } from "@/utils/supabase"
 import { compressImage } from "@/lib/imageUtils"
+import { deleteRegistration } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -28,6 +29,7 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = e.target.files?.[0]
     if (!selected) return
+    if (preview) URL.revokeObjectURL(preview)
     setFile(selected)
     setPreview(URL.createObjectURL(selected))
   }
@@ -56,13 +58,7 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
         .maybeSingle()
 
       if (existing) {
-        const path = new URL(existing.image_url).pathname.split("/baskets/")[1]
-        await Promise.all([
-          path
-            ? supabase.storage.from("baskets").remove([decodeURIComponent(path)])
-            : Promise.resolve(),
-          supabase.from("registrations").delete().eq("qr_id", qrId),
-        ])
+        await deleteRegistration(qrId, existing.image_url)
       }
 
       // 2. 이미지 압축 + 업로드
@@ -92,7 +88,8 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
 
       onSuccess()
     } catch (err) {
-      setError(err instanceof Error ? err.message : "등록에 실패했어요")
+      console.error("등록 실패:", err)
+      setError("등록에 실패했어요. 다시 시도해주세요.")
     } finally {
       setSubmitting(false)
     }
