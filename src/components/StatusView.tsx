@@ -1,7 +1,9 @@
 import { useState } from "react"
-import { BasketPhoto } from "@/components/BasketPhoto"
+import { useNavigate } from "react-router-dom"
+import { RegistrationPhotos } from "@/components/RegistrationPhotos"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Home } from "lucide-react"
 import type { Registration } from "@/types"
 
 interface StatusViewProps {
@@ -13,6 +15,7 @@ interface StatusViewProps {
 
 export function StatusView({ qrId, registration, onRegister, onRetrieve }: StatusViewProps) {
   const [confirmRetrieve, setConfirmRetrieve] = useState(false)
+  const navigate = useNavigate()
 
   function handleRetrieveClick() {
     if (confirmRetrieve) {
@@ -26,7 +29,17 @@ export function StatusView({ qrId, registration, onRegister, onRetrieve }: Statu
   return (
     <div className="flex min-h-svh flex-col items-center bg-background px-4 py-6">
       <header className="mb-6 flex w-full max-w-md items-center justify-between">
-        <h1 className="text-xl font-bold tracking-tight">빨래큐</h1>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="rounded-md p-1.5 hover:bg-muted"
+            aria-label="홈으로"
+          >
+            <Home className="h-5 w-5" />
+          </button>
+          <h1 className="text-xl font-bold tracking-tight">빨래큐</h1>
+        </div>
         <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
           #{qrId}
         </span>
@@ -46,7 +59,10 @@ export function StatusView({ qrId, registration, onRegister, onRetrieve }: Statu
                 </p>
               </div>
 
-              <BasketPhoto imageUrl={registration.image_url} />
+              <RegistrationPhotos
+                basketImageUrl={registration.image_url}
+                washerImageUrl={registration.washer_image_url}
+              />
 
               <div className="space-y-2.5">
                 <Button onClick={onRegister} className="w-full" size="lg">

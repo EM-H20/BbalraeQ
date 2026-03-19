@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { useParams } from "react-router-dom"
 import { supabase } from "@/utils/supabase"
-import { deleteRegistration } from "@/lib/utils"
+import { deleteRegistration } from "@/lib/registration"
 import { StatusView } from "@/components/StatusView"
 import { RegisterForm } from "@/components/RegisterForm"
 import { SuccessMessage } from "@/components/SuccessMessage"
@@ -32,7 +32,7 @@ export function QrPage() {
       const elapsed = Date.now() - new Date(data.created_at).getTime()
 
       if (elapsed > TWENTY_FOUR_HOURS) {
-        await deleteRegistration(qrId, data.image_url)
+        await deleteRegistration(qrId, data.image_url, data.washer_image_url)
         setRegistration(null)
         setLoading(false)
         return
@@ -51,7 +51,7 @@ export function QrPage() {
     if (!qrId || !registration) return
 
     try {
-      await deleteRegistration(qrId, registration.image_url)
+      await deleteRegistration(qrId, registration.image_url, registration.washer_image_url)
       setRegistration(null)
     } catch (err) {
       console.error("회수 실패:", err)
