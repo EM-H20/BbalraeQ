@@ -132,11 +132,12 @@ export interface Registration {
 }
 ```
 
-### 환경변수 (`.env`)
+### 환경변수 (`.env`) — 이미 설정됨
 
 ```
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_DB_PASSWORD=***
+VITE_SUPABASE_URL=https://oaktehjutwaadnhtqtyo.supabase.co
+VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=***
 ```
 
 **완료 조건**: 모든 파일/폴더 생성, 타입 에러 없음
@@ -154,14 +155,24 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 /q/:qrId   → QrPage.tsx     (QR 스캔 후 페이지)
 ```
 
-### src/lib/supabase.ts
+### src/utils/supabase.ts (이미 생성됨)
 
-- Supabase 클라이언트 초기화 (환경변수 기반)
+- Supabase 클라이언트 초기화 완료
+- 환경변수: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY`
+- Project ID: `oaktehjutwaadnhtqtyo`
+- Region: Northeast Asia (Seoul)
 
 ### src/lib/imageUtils.ts
 
 - `compressImage()` 함수: browser-image-compression 래퍼
 - 최대 파일 크기, 최대 너비/높이 설정
+
+### Supabase MCP 연결
+
+개발 중 Supabase MCP 서버를 통해 DB 직접 조작 가능:
+
+- **Direct Connection**: `postgresql://postgres:${SUPABASE_DB_PASSWORD}@db.oaktehjutwaadnhtqtyo.supabase.co:5432/postgres`
+- 용도: 테이블 생성, RLS 정책 설정, 데이터 확인 등 개발 시 활용
 
 **완료 조건**: `/q/test` 접속 시 QrPage 컴포넌트 렌더링
 
@@ -276,9 +287,16 @@ Phase 0 (TS 전환)
 
 ---
 
-## Supabase 사전 준비 (별도)
+## Supabase 사전 준비
 
-워크플로우 시작 전 Supabase 프로젝트에서 수동 설정 필요:
+### 프로젝트 정보
+
+| 항목 | 값 |
+|------|------|
+| Project Name | BbalraeQ |
+| Project ID | `oaktehjutwaadnhtqtyo` |
+| Region | Northeast Asia (Seoul) |
+| Direct Connection | `postgresql://postgres:${SUPABASE_DB_PASSWORD}@db.oaktehjutwaadnhtqtyo.supabase.co:5432/postgres` |
 
 ### 테이블 생성 SQL
 
@@ -303,6 +321,40 @@ CREATE TABLE registrations (
 - `baskets` 버킷: SELECT / INSERT / DELETE 모두 허용 (anon)
 
 > 로그인 없는 서비스이므로 anon 키로 전체 접근 허용
+
+---
+
+## Supabase MCP 서버 연결
+
+개발 중 Claude Code에서 Supabase DB를 직접 조작하기 위해 MCP 서버를 사용한다.
+
+### 설정 (완료)
+
+프로젝트 루트 `.mcp.json`에 설정됨:
+
+```json
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "npx",
+      "args": ["-y", "@supabase/mcp-server-supabase@latest", "--project-ref", "oaktehjutwaadnhtqtyo"],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "***"
+      }
+    }
+  }
+}
+```
+
+- `.mcp.json`은 `.gitignore`에 포함 (토큰 보호)
+- `SUPABASE_ACCESS_TOKEN`은 `.env`에도 보관
+
+### 용도
+
+- 테이블 생성/수정 (SQL 실행)
+- RLS 정책 설정
+- Storage 버킷 관리
+- 개발 중 데이터 확인/디버깅
 
 ---
 

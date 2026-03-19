@@ -130,6 +130,10 @@ React에서는 컴포넌트 자체가 View + Controller 역할을 하므로, MVC
 ```
 
 - **Supabase**: DB (registrations 테이블) + Storage (baskets 버킷) + 자동 생성 REST API
+  - Project ID: `oaktehjutwaadnhtqtyo`
+  - Region: Northeast Asia (Seoul)
+  - Direct Connection: `postgresql://postgres:***@db.oaktehjutwaadnhtqtyo.supabase.co:5432/postgres`
+- **Supabase MCP**: 개발 중 Claude Code에서 DB 직접 조작 (테이블 생성, RLS, 데이터 확인)
 - **Vercel**: 정적 빌드 배포 (SPA)
 - **모바일 브라우저**: QR 스캔 → URL 접속 (주 사용 환경)
 

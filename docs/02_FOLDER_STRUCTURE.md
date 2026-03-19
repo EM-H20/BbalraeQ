@@ -31,8 +31,9 @@ bbalraeq/
 │   │   ├── BasketPhoto.tsx             바구니 사진 표시
 │   │   └── SuccessMessage.tsx          등록 완료 피드백
 │   │
-│   ├── lib/                         ← 서비스 계층
-│   │   ├── supabase.ts                 Supabase 클라이언트 초기화
+│   ├── utils/                       ← 서비스 계층
+│   │   └── supabase.ts                 Supabase 클라이언트 초기화
+│   ├── lib/                         ← 유틸리티
 │   │   ├── imageUtils.ts               이미지 압축 유틸리티
 │   │   └── utils.ts                    cn() 함수 (shadcn/ui용)
 │   │
@@ -89,13 +90,20 @@ bbalraeq/
 
 shadcn/ui로 자동 생성되는 기본 UI 컴포넌트. **직접 수정하지 않는다.** 커스텀이 필요하면 래퍼 컴포넌트를 만든다.
 
-### `src/lib/`
+### `src/utils/`
 
-React에 의존하지 않는 순수 함수와 외부 서비스 클라이언트.
+외부 서비스 클라이언트.
 
 | 파일 | 역할 |
 |------|------|
 | `supabase.ts` | Supabase 클라이언트 인스턴스 생성 및 export |
+
+### `src/lib/`
+
+React에 의존하지 않는 순수 유틸리티 함수.
+
+| 파일 | 역할 |
+|------|------|
 | `imageUtils.ts` | `browser-image-compression` 래퍼 (압축 옵션 설정) |
 | `utils.ts` | `cn()` 함수 — `clsx` + `tailwind-merge` 조합 (shadcn/ui 필수) |
 

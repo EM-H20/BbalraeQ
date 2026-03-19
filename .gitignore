@@ -26,6 +26,7 @@ dist-ssr
 # env files
 .env
 .env.*.local
+.mcp.json
 
 # ====================================================================
 # SUH-DEVOPS-TEMPLATE: Auto-added entries
