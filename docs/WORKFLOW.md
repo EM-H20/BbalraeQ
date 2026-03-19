@@ -18,6 +18,7 @@
 ## 사용 가능한 .agents 스킬
 
 | 스킬 | 설명 | 적용 시점 |
+
 |------|------|-----------|
 | `vercel-react-best-practices` | React 성능 최적화 64개 룰 (rerender, bundle, async 등) | Phase 5~6 컴포넌트 구현 시 |
 | `web-design-guidelines` | 웹 인터페이스 가이드라인 준수 검증 | Phase 7 UI 마무리 후 리뷰 |
@@ -51,15 +52,15 @@
 npm install react-router-dom @supabase/supabase-js browser-image-compression lucide-react clsx tailwind-merge class-variance-authority
 ```
 
-| 패키지 | 용도 |
-|--------|------|
-| react-router-dom | `/q/:qrId` 동적 라우팅 |
-| @supabase/supabase-js | DB + Storage |
+| 패키지                    | 용도                        |
+| ------------------------- | --------------------------- |
+| react-router-dom          | `/q/:qrId` 동적 라우팅      |
+| @supabase/supabase-js     | DB + Storage                |
 | browser-image-compression | 바구니 사진 클라이언트 압축 |
-| lucide-react | 아이콘 |
-| clsx | 조건부 className |
-| tailwind-merge | Tailwind 클래스 충돌 방지 |
-| class-variance-authority | 컴포넌트 변형 관리 |
+| lucide-react              | 아이콘                      |
+| clsx                      | 조건부 className            |
+| tailwind-merge            | Tailwind 클래스 충돌 방지   |
+| class-variance-authority  | 컴포넌트 변형 관리          |
 
 ### devDependencies
 
@@ -204,10 +205,10 @@ VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=***
 
 ### 마이크로카피 (PRD 섹션 4)
 
-| 상태 | 텍스트 |
-|------|--------|
-| 사용 중 | "현재 사용 중이에요" / "{닉네임}님의 세탁물이에요" |
-| 비어있음 | "지금 사용할 수 있어요!" |
+| 상태     | 텍스트                                             |
+| -------- | -------------------------------------------------- |
+| 사용 중  | "현재 사용 중이에요" / "{닉네임}님의 세탁물이에요" |
+| 비어있음 | "지금 사용할 수 있어요!"                           |
 
 **완료 조건**: `/q/test` 접속 시 비어있음 화면 정상 표시
 
@@ -291,11 +292,11 @@ Phase 0 (TS 전환)
 
 ### 프로젝트 정보
 
-| 항목 | 값 |
-|------|------|
-| Project Name | BbalraeQ |
-| Project ID | `oaktehjutwaadnhtqtyo` |
-| Region | Northeast Asia (Seoul) |
+| 항목              | 값                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------- |
+| Project Name      | BbalraeQ                                                                                          |
+| Project ID        | `oaktehjutwaadnhtqtyo`                                                                            |
+| Region            | Northeast Asia (Seoul)                                                                            |
 | Direct Connection | `postgresql://postgres:${SUPABASE_DB_PASSWORD}@db.oaktehjutwaadnhtqtyo.supabase.co:5432/postgres` |
 
 ### 테이블 생성 SQL
@@ -337,7 +338,12 @@ CREATE TABLE registrations (
   "mcpServers": {
     "supabase": {
       "command": "npx",
-      "args": ["-y", "@supabase/mcp-server-supabase@latest", "--project-ref", "oaktehjutwaadnhtqtyo"],
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--project-ref",
+        "oaktehjutwaadnhtqtyo"
+      ],
       "env": {
         "SUPABASE_ACCESS_TOKEN": "***"
       }
