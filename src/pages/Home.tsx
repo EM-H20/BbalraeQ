@@ -9,8 +9,8 @@ const STEPS = [
   },
   {
     icon: Camera,
-    title: "바구니 등록",
-    description: "닉네임과 바구니 사진을 올려주세요",
+    title: "사진 등록",
+    description: "닉네임과 세탁기/바구니 사진을 올려주세요",
   },
   {
     icon: Package,
