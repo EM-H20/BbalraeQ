@@ -1,7 +1,14 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { Home } from "@/pages/Home"
+import { QrPage } from "@/pages/QrPage"
+
 export function App() {
   return (
-    <div>
-      <h1>빨래큐</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/q/:qrId" element={<QrPage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
