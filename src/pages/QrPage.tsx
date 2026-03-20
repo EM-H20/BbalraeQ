@@ -1,93 +1,97 @@
-import { useState, useEffect, useCallback, useRef } from "react"
-import { useParams } from "react-router-dom"
-import { supabase } from "@/utils/supabase"
-import { deleteRegistration } from "@/lib/registration"
-import { Navigate } from "react-router-dom"
-import { StatusView } from "@/components/StatusView"
-import { RegisterForm } from "@/components/RegisterForm"
-import { SuccessMessage } from "@/components/SuccessMessage"
-import type { Registration } from "@/types"
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useParams } from "react-router-dom";
+import { supabase } from "@/utils/supabase";
+import { deleteRegistration } from "@/lib/registration";
+import { Navigate } from "react-router-dom";
+import { StatusView } from "@/components/StatusView";
+import { RegisterForm } from "@/components/RegisterForm";
+import { SuccessMessage } from "@/components/SuccessMessage";
+import type { Registration } from "@/types";
 
-type View = "status" | "register" | "success"
+type View = "status" | "register" | "success";
 
-const QR_ID_PATTERN = /^[a-zA-Z0-9_-]+$/
-const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000
-const SUCCESS_REDIRECT_MS = 2000
+const QR_ID_PATTERN = /^[a-zA-Z0-9_-]+$/;
+const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+const SUCCESS_REDIRECT_MS = 2000;
 
 export function QrPage() {
-  const { qrId } = useParams<{ qrId: string }>()
-  const [registration, setRegistration] = useState<Registration | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [view, setView] = useState<View>("status")
-  const [retrieving, setRetrieving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const successTimerRef = useRef<ReturnType<typeof setTimeout>>(null)
+  const { qrId } = useParams<{ qrId: string }>();
+  const [registration, setRegistration] = useState<Registration | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [view, setView] = useState<View>("status");
+  const [retrieving, setRetrieving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const successTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   useEffect(() => {
     return () => {
-      if (successTimerRef.current) clearTimeout(successTimerRef.current)
-    }
-  }, [])
+      if (successTimerRef.current) clearTimeout(successTimerRef.current);
+    };
+  }, []);
 
   const fetchRegistration = useCallback(async () => {
-    if (!qrId) return
-    setLoading(true)
-    setError(null)
+    if (!qrId) return;
+    setLoading(true);
+    setError(null);
 
     const { data, error: fetchError } = await supabase
       .from("registrations")
-      .select("*")
+      .select("id, qr_id, nickname, image_url, washer_image_url, created_at")
       .eq("qr_id", qrId)
-      .maybeSingle()
+      .maybeSingle();
 
     if (fetchError) {
-      console.error("조회 실패:", fetchError)
-      setError("데이터를 불러오지 못했어요. 다시 시도해주세요.")
-      setLoading(false)
-      return
+      void fetchError;
+      setError("데이터를 불러오지 못했어요. 다시 시도해주세요.");
+      setLoading(false);
+      return;
     }
 
     // 24시간 만료 체크: 조회 시점에 자동 삭제
     if (data) {
-      const elapsed = Date.now() - new Date(data.created_at).getTime()
+      const elapsed = Date.now() - new Date(data.created_at).getTime();
 
       if (elapsed > TWENTY_FOUR_HOURS) {
-        await deleteRegistration(qrId, data.image_url, data.washer_image_url)
-        setRegistration(null)
-        setLoading(false)
-        return
+        await deleteRegistration(qrId, data.image_url, data.washer_image_url);
+        setRegistration(null);
+        setLoading(false);
+        return;
       }
     }
 
-    setRegistration(data)
-    setLoading(false)
-  }, [qrId])
+    setRegistration(data);
+    setLoading(false);
+  }, [qrId]);
 
   useEffect(() => {
-    fetchRegistration()
-  }, [fetchRegistration])
+    fetchRegistration();
+  }, [fetchRegistration]);
 
   async function handleRetrieve() {
-    if (!qrId || !registration) return
+    if (!qrId || !registration) return;
 
-    setRetrieving(true)
+    setRetrieving(true);
     try {
-      await deleteRegistration(qrId, registration.image_url, registration.washer_image_url)
-      setRegistration(null)
+      await deleteRegistration(
+        qrId,
+        registration.image_url,
+        registration.washer_image_url,
+      );
+      setRegistration(null);
     } catch (err) {
-      console.error("회수 실패:", err)
-      setError("회수에 실패했어요. 다시 시도해주세요.")
+      void err;
+      setError("회수에 실패했어요. 다시 시도해주세요.");
     } finally {
-      setRetrieving(false)
+      setRetrieving(false);
     }
   }
 
   function handleRegisterSuccess() {
-    setView("success")
+    setView("success");
     successTimerRef.current = setTimeout(() => {
-      setView("status")
-      fetchRegistration()
-    }, SUCCESS_REDIRECT_MS)
+      setView("status");
+      fetchRegistration();
+    }, SUCCESS_REDIRECT_MS);
   }
 
   if (loading) {
@@ -98,10 +102,10 @@ export function QrPage() {
           <p className="text-sm text-muted-foreground">불러오는 중…</p>
         </div>
       </div>
-    )
+    );
   }
 
-  if (!qrId || !QR_ID_PATTERN.test(qrId)) return <Navigate to="/" replace />
+  if (!qrId || !QR_ID_PATTERN.test(qrId)) return <Navigate to="/" replace />;
 
   return (
     <>
@@ -125,5 +129,5 @@ export function QrPage() {
         <SuccessMessage message="등록되었어요! 바구니를 세탁기 옆에 두세요" />
       )}
     </>
-  )
+  );
 }
