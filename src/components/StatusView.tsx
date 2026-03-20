@@ -47,7 +47,7 @@ export function StatusView({
             className="rounded-md p-1.5 hover:bg-muted"
             aria-label="홈으로"
           >
-            <Home className="h-5 w-5" />
+            <Home className="h-7 w-7" />
           </button>
           <h1 className="text-2xl font-bold tracking-tight">빨래큐</h1>
         </div>
