@@ -38,7 +38,7 @@ export function StatusView({
   }
 
   return (
-    <div className="flex min-h-svh flex-col items-center bg-background px-4 py-6">
+    <div className="flex min-h-svh flex-col items-center bg-background px-4 pt-10 pb-6">
       <header className="mb-6 flex w-full max-w-md items-center justify-between">
         <div className="flex items-center gap-2">
           <button

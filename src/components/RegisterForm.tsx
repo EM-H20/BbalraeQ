@@ -148,7 +148,7 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
   }
 
   return (
-    <div className="flex min-h-svh flex-col items-center bg-background px-4 py-6">
+    <div className="flex min-h-svh flex-col items-center bg-background px-4 pt-10 pb-6">
       <header className="mb-6 flex w-full max-w-md items-center gap-3">
         <button
           type="button"

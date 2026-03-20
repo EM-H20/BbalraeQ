@@ -1,5 +1,6 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { WashingMachine, QrCode, Camera, Package } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card";
+import { QrCode, Camera, Package } from "lucide-react";
+import washingMachine from "@/assets/washing_machine.png";
 
 const STEPS = [
   {
@@ -17,20 +18,23 @@ const STEPS = [
     title: "세탁물 확인",
     description: "다른 분이 바구니에 넣어드려요",
   },
-] as const
+] as const;
 
 export function Home() {
   return (
-    <div className="flex min-h-svh flex-col items-center bg-background px-4 py-8">
-      <div className="w-full max-w-md space-y-8">
+    <div className="flex min-h-svh flex-col items-center bg-background px-4 pt-12 pb-8">
+      <div className="w-full max-w-md space-y-5">
         {/* 히어로 */}
         <div className="space-y-3 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-            <WashingMachine className="h-8 w-8 text-primary" />
-          </div>
+          <img
+            src={washingMachine}
+            alt="세탁기"
+            className="mx-auto h-24 w-24"
+          />
           <h1 className="text-3xl font-bold tracking-tight">빨래큐</h1>
           <p className="text-lg text-muted-foreground">
-            QR 스캔 한 번으로<br />
+            QR 스캔 한 번으로
+            <br />
             세탁물 주인과 바구니를 확인하세요
           </p>
         </div>
@@ -38,7 +42,9 @@ export function Home() {
         {/* 사용법 */}
         <Card>
           <CardContent className="space-y-5 p-5">
-            <h2 className="text-base font-semibold text-muted-foreground">사용 방법</h2>
+            <h2 className="text-base font-semibold text-muted-foreground">
+              사용 방법
+            </h2>
             <ol className="space-y-4">
               {STEPS.map((step, i) => (
                 <li key={step.title} className="flex items-start gap-3">
@@ -49,7 +55,9 @@ export function Home() {
                     <p className="text-base font-semibold">
                       {i + 1}. {step.title}
                     </p>
-                    <p className="text-base text-muted-foreground">{step.description}</p>
+                    <p className="text-base text-muted-foreground">
+                      {step.description}
+                    </p>
                   </div>
                 </li>
               ))}
@@ -58,12 +66,63 @@ export function Home() {
         </Card>
 
         {/* 안내 */}
-        <div className="space-y-1 text-center text-sm text-muted-foreground">
-          <p>세탁기의 QR 코드를 스캔하면 자동으로 이동합니다</p>
-          <p>QR ID는 영문, 숫자, -, _ 조합으로 자유롭게 지정할 수 있어요</p>
-          <p className="font-medium">예: /q/W1 · /q/dryer-01 · /q/Room_3</p>
-        </div>
+        <Card>
+          <CardContent className="space-y-3 p-5">
+            <h2 className="text-base font-semibold text-muted-foreground">
+              QR 코드 만들기
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              아래 형식으로 QR 코드를 생성해 세탁기에 붙이세요.
+              <br />
+              영문, 숫자, -, _ 조합으로 자유롭게 지정할 수 있어요.
+            </p>
+            <div className="rounded-lg bg-muted/50 p-3 text-sm font-mono space-y-1">
+              <p>
+                <span className="text-muted-foreground">세탁기 1호 →</span>{" "}
+                웹주소/q/W1
+              </p>
+              <p>
+                <span className="text-muted-foreground">세탁기 2호 →</span>{" "}
+                웹주소/q/W2
+              </p>
+              <p>
+                <span className="text-muted-foreground">건조기 1호 →</span>{" "}
+                웹주소/q/D1
+              </p>
+              <p>
+                <span className="text-muted-foreground">3층 세탁실 →</span>{" "}
+                웹주소/q/room3
+              </p>
+              <p>
+                <span className="text-muted-foreground">자유 형식 →</span>{" "}
+                웹주소/q/my-washer_01
+              </p>
+            </div>
+            <a
+              href="https://qr.naver.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex w-full items-center justify-center rounded-lg bg-[#03C75A] px-4 py-2.5 text-sm font-medium text-white"
+            >
+              네이버 QR 코드 만들기
+            </a>
+          </CardContent>
+        </Card>
+
+        <footer className="space-y-0.5 text-center text-muted-foreground/50">
+          <p className="text-sm">&copy; 2026. Elipair All rights reserved.</p>
+          <p className="text-xs">
+            <a
+              href="https://www.flaticon.com/kr/free-icons/-"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              아이콘 제작자: smashingstocks - Flaticon
+            </a>
+          </p>
+        </footer>
       </div>
     </div>
-  )
+  );
 }
