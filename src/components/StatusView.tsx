@@ -49,9 +49,9 @@ export function StatusView({
           >
             <Home className="h-5 w-5" />
           </button>
-          <h1 className="text-xl font-bold tracking-tight">빨래큐</h1>
+          <h1 className="text-2xl font-bold tracking-tight">빨래큐</h1>
         </div>
-        <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+        <span className="rounded-md bg-muted px-2 py-1 text-sm font-medium text-muted-foreground">
           #{qrId}
         </span>
       </header>
@@ -60,7 +60,7 @@ export function StatusView({
         <CardContent className="space-y-5 p-5">
           {error ? (
             <div className="flex items-center justify-between rounded-lg bg-destructive/10 px-3 py-2">
-              <p className="text-sm text-destructive">{error}</p>
+              <p className="text-base text-destructive">{error}</p>
               <button
                 type="button"
                 onClick={onDismissError}
@@ -74,11 +74,11 @@ export function StatusView({
           {registration ? (
             <>
               <div className="space-y-2 text-center">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-sm font-medium text-green-700">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-base font-medium text-green-700">
                   <span className="h-2 w-2 rounded-full bg-green-500" aria-hidden="true" />
                   현재 사용 중이에요
                 </span>
-                <p className="text-lg font-semibold text-pretty">
+                <p className="text-xl font-semibold text-pretty">
                   &ldquo;{registration.nickname}&rdquo;님의 세탁물이에요
                 </p>
               </div>
@@ -120,7 +120,7 @@ export function StatusView({
           ) : (
             <>
               <div className="py-8 text-center">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-sm font-medium text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-base font-medium text-muted-foreground">
                   <span className="h-2 w-2 rounded-full bg-gray-400" aria-hidden="true" />
                   지금 사용할 수 있어요!
                 </span>

@@ -8,7 +8,7 @@ export function RegistrationPhotos({ basketImageUrl, washerImageUrl }: Registrat
     <div className="space-y-3">
       {washerImageUrl ? (
         <div className="space-y-1.5">
-          <p className="text-xs font-medium text-muted-foreground">세탁기</p>
+          <p className="text-sm font-medium text-muted-foreground">세탁기</p>
           <div className="overflow-hidden rounded-lg">
             <img
               src={washerImageUrl}
@@ -20,7 +20,7 @@ export function RegistrationPhotos({ basketImageUrl, washerImageUrl }: Registrat
         </div>
       ) : null}
       <div className="space-y-1.5">
-        <p className="text-xs font-medium text-muted-foreground">바구니</p>
+        <p className="text-sm font-medium text-muted-foreground">바구니</p>
         <div className="overflow-hidden rounded-lg">
           <img
             src={basketImageUrl}
@@ -29,7 +29,7 @@ export function RegistrationPhotos({ basketImageUrl, washerImageUrl }: Registrat
             loading="lazy"
           />
         </div>
-        <p className="text-center text-sm font-medium text-muted-foreground">
+        <p className="text-center text-base font-medium text-muted-foreground">
           이 바구니에 넣어주세요!
         </p>
       </div>

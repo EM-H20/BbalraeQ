@@ -11,7 +11,7 @@ export function SuccessMessage({ message }: SuccessMessageProps) {
       <Card className="w-full max-w-md">
         <CardContent className="flex flex-col items-center gap-4 p-8">
           <CheckCircle className="h-16 w-16 text-green-500" />
-          <p className="text-center text-lg font-semibold">{message}</p>
+          <p className="text-center text-xl font-semibold">{message}</p>
         </CardContent>
       </Card>
     </div>
