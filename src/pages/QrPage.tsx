@@ -1,8 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useParams, Navigate } from "react-router-dom";
 import { supabase } from "@/utils/supabase";
 import { deleteRegistration } from "@/lib/registration";
-import { Navigate } from "react-router-dom";
 import { StatusView } from "@/components/StatusView";
 import { RegisterForm } from "@/components/RegisterForm";
 import { SuccessMessage } from "@/components/SuccessMessage";
@@ -47,10 +46,8 @@ export function QrPage() {
       return;
     }
 
-    // 24시간 만료 체크: 조회 시점에 자동 삭제
     if (data) {
       const elapsed = Date.now() - new Date(data.created_at).getTime();
-
       if (elapsed > TWENTY_FOUR_HOURS) {
         await deleteRegistration(qrId, data.image_url, data.washer_image_url);
         setRegistration(null);
@@ -67,7 +64,7 @@ export function QrPage() {
     fetchRegistration();
   }, [fetchRegistration]);
 
-  async function handleRetrieve() {
+  const handleRetrieve = useCallback(async () => {
     if (!qrId || !registration) return;
 
     setRetrieving(true);
@@ -84,15 +81,24 @@ export function QrPage() {
     } finally {
       setRetrieving(false);
     }
-  }
+  }, [qrId, registration]);
 
-  function handleRegisterSuccess() {
+  const handleRegisterSuccess = useCallback(() => {
     setView("success");
     successTimerRef.current = setTimeout(() => {
       setView("status");
       fetchRegistration();
     }, SUCCESS_REDIRECT_MS);
-  }
+  }, [fetchRegistration]);
+
+  const handleRegister = useCallback(() => setView("register"), []);
+  const handleCancel = useCallback(() => setView("status"), []);
+  const handleDismissError = useCallback(() => setError(null), []);
+
+  const validQrId = useMemo(
+    () => (qrId && QR_ID_PATTERN.test(qrId) ? qrId : null),
+    [qrId],
+  );
 
   if (loading) {
     return (
@@ -105,25 +111,26 @@ export function QrPage() {
     );
   }
 
-  if (!qrId || !QR_ID_PATTERN.test(qrId)) return <Navigate to="/" replace />;
+  if (!validQrId) return <Navigate to="/" replace />;
 
   return (
     <>
       {view === "status" ? (
         <StatusView
-          qrId={qrId}
+          qrId={validQrId}
           registration={registration}
-          onRegister={() => setView("register")}
+          onRegister={handleRegister}
           onRetrieve={handleRetrieve}
           retrieving={retrieving}
           error={error}
-          onDismissError={() => setError(null)}
+          onDismissError={handleDismissError}
         />
       ) : view === "register" ? (
         <RegisterForm
-          qrId={qrId}
+          qrId={validQrId}
+          hasExisting={!!registration}
           onSuccess={handleRegisterSuccess}
-          onCancel={() => setView("status")}
+          onCancel={handleCancel}
         />
       ) : (
         <SuccessMessage message="등록되었어요! 바구니를 세탁기 옆에 두세요" />
