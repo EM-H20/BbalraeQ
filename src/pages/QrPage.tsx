@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import { useParams } from "react-router-dom"
 import { supabase } from "@/utils/supabase"
 import { deleteRegistration } from "@/lib/registration"
+import { Navigate } from "react-router-dom"
 import { StatusView } from "@/components/StatusView"
 import { RegisterForm } from "@/components/RegisterForm"
 import { SuccessMessage } from "@/components/SuccessMessage"
@@ -9,6 +10,7 @@ import type { Registration } from "@/types"
 
 type View = "status" | "register" | "success"
 
+const QR_ID_PATTERN = /^[a-zA-Z0-9_-]+$/
 const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000
 const SUCCESS_REDIRECT_MS = 2000
 
@@ -99,7 +101,7 @@ export function QrPage() {
     )
   }
 
-  if (!qrId) return null
+  if (!qrId || !QR_ID_PATTERN.test(qrId)) return <Navigate to="/" replace />
 
   return (
     <>

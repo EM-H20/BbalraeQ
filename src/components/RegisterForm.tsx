@@ -158,7 +158,7 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <h1 className="text-xl font-bold tracking-tight">내 세탁물 등록</h1>
+        <h1 className="text-2xl font-bold tracking-tight">내 세탁물 등록</h1>
       </header>
 
       <Card className="w-full max-w-md">
@@ -176,7 +176,7 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
                 maxLength={10}
               />
               {nickname.length > 0 && !nicknameValid ? (
-                <p className="text-xs text-destructive">2~10자로 입력해주세요</p>
+                <p className="text-sm text-destructive">2~10자로 입력해주세요</p>
               ) : null}
             </div>
 
@@ -206,7 +206,7 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
               galleryRef={basketGalleryRef}
             />
 
-            {error ? <p className="text-sm text-destructive">{error}</p> : null}
+            {error ? <p className="text-base text-destructive">{error}</p> : null}
 
             <Button type="submit" disabled={!canSubmit} className="w-full" size="lg">
               {submitting ? "등록 중…" : "등록 완료!"}
@@ -256,7 +256,7 @@ function PhotoUpload({
         </div>
       ) : (
         <div className="flex aspect-video w-full items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted/30">
-          <p className="text-sm text-muted-foreground">{placeholder}</p>
+          <p className="text-base text-muted-foreground">{placeholder}</p>
         </div>
       )}
       <div className="flex gap-2.5">
