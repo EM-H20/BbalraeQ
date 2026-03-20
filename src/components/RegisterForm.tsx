@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { supabase } from "@/utils/supabase"
 import { compressImage } from "@/lib/imageUtils"
 import { deleteRegistration } from "@/lib/registration"
@@ -20,6 +20,7 @@ interface PhotoState {
 }
 
 const EMPTY_PHOTO: PhotoState = { file: null, preview: null }
+const QR_ID_PATTERN = /^[a-zA-Z0-9_-]+$/
 
 export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
   const [nickname, setNickname] = useState("")
@@ -33,8 +34,28 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
   const basketCameraRef = useRef<HTMLInputElement>(null)
   const basketGalleryRef = useRef<HTMLInputElement>(null)
 
-  const nicknameValid = nickname.length >= 2 && nickname.length <= 10
+  const trimmedNickname = nickname.trim()
+  const nicknameValid = trimmedNickname.length >= 2 && trimmedNickname.length <= 10
   const canSubmit = nicknameValid && washerPhoto.file && basketPhoto.file && !submitting
+
+  // Object URL cleanup on unmount
+  const washerPreviewRef = useRef<string | null>(null)
+  const basketPreviewRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    washerPreviewRef.current = washerPhoto.preview
+  }, [washerPhoto.preview])
+
+  useEffect(() => {
+    basketPreviewRef.current = basketPhoto.preview
+  }, [basketPhoto.preview])
+
+  useEffect(() => {
+    return () => {
+      if (washerPreviewRef.current) URL.revokeObjectURL(washerPreviewRef.current)
+      if (basketPreviewRef.current) URL.revokeObjectURL(basketPreviewRef.current)
+    }
+  }, [])
 
   function handleFileChange(
     e: React.ChangeEvent<HTMLInputElement>,
@@ -81,6 +102,11 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
     e.preventDefault()
     if (!canSubmit) return
 
+    if (!QR_ID_PATTERN.test(qrId)) {
+      setError("잘못된 QR 코드입니다.")
+      return
+    }
+
     setSubmitting(true)
     setError(null)
 
@@ -105,7 +131,7 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
       // 3. 레코드 삽입
       const { error: insertError } = await supabase.from("registrations").insert({
         qr_id: qrId,
-        nickname,
+        nickname: trimmedNickname,
         image_url: basketUrl,
         washer_image_url: washerUrl,
       })

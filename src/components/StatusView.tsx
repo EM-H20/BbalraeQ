@@ -11,9 +11,20 @@ interface StatusViewProps {
   registration: Registration | null
   onRegister: () => void
   onRetrieve: () => void
+  retrieving: boolean
+  error: string | null
+  onDismissError: () => void
 }
 
-export function StatusView({ qrId, registration, onRegister, onRetrieve }: StatusViewProps) {
+export function StatusView({
+  qrId,
+  registration,
+  onRegister,
+  onRetrieve,
+  retrieving,
+  error,
+  onDismissError,
+}: StatusViewProps) {
   const [confirmRetrieve, setConfirmRetrieve] = useState(false)
   const navigate = useNavigate()
 
@@ -47,6 +58,19 @@ export function StatusView({ qrId, registration, onRegister, onRetrieve }: Statu
 
       <Card className="w-full max-w-md">
         <CardContent className="space-y-5 p-5">
+          {error ? (
+            <div className="flex items-center justify-between rounded-lg bg-destructive/10 px-3 py-2">
+              <p className="text-sm text-destructive">{error}</p>
+              <button
+                type="button"
+                onClick={onDismissError}
+                className="text-xs text-destructive underline"
+              >
+                닫기
+              </button>
+            </div>
+          ) : null}
+
           {registration ? (
             <>
               <div className="space-y-2 text-center">
@@ -73,10 +97,15 @@ export function StatusView({ qrId, registration, onRegister, onRetrieve }: Statu
                   variant={confirmRetrieve ? "destructive" : "outline"}
                   className="w-full"
                   size="lg"
+                  disabled={retrieving}
                 >
-                  {confirmRetrieve ? "정말 회수 완료할까요?" : "세탁물 회수 완료"}
+                  {retrieving
+                    ? "처리 중…"
+                    : confirmRetrieve
+                      ? "정말 회수 완료할까요?"
+                      : "세탁물 회수 완료"}
                 </Button>
-                {confirmRetrieve ? (
+                {confirmRetrieve && !retrieving ? (
                   <Button
                     onClick={() => setConfirmRetrieve(false)}
                     variant="ghost"

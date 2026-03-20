@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { useParams } from "react-router-dom"
 import { supabase } from "@/utils/supabase"
 import { deleteRegistration } from "@/lib/registration"
@@ -17,15 +17,33 @@ export function QrPage() {
   const [registration, setRegistration] = useState<Registration | null>(null)
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState<View>("status")
+  const [retrieving, setRetrieving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const successTimerRef = useRef<ReturnType<typeof setTimeout>>(null)
+
+  useEffect(() => {
+    return () => {
+      if (successTimerRef.current) clearTimeout(successTimerRef.current)
+    }
+  }, [])
 
   const fetchRegistration = useCallback(async () => {
     if (!qrId) return
     setLoading(true)
-    const { data } = await supabase
+    setError(null)
+
+    const { data, error: fetchError } = await supabase
       .from("registrations")
       .select("*")
       .eq("qr_id", qrId)
       .maybeSingle()
+
+    if (fetchError) {
+      console.error("조회 실패:", fetchError)
+      setError("데이터를 불러오지 못했어요. 다시 시도해주세요.")
+      setLoading(false)
+      return
+    }
 
     // 24시간 만료 체크: 조회 시점에 자동 삭제
     if (data) {
@@ -50,17 +68,21 @@ export function QrPage() {
   async function handleRetrieve() {
     if (!qrId || !registration) return
 
+    setRetrieving(true)
     try {
       await deleteRegistration(qrId, registration.image_url, registration.washer_image_url)
       setRegistration(null)
     } catch (err) {
       console.error("회수 실패:", err)
+      setError("회수에 실패했어요. 다시 시도해주세요.")
+    } finally {
+      setRetrieving(false)
     }
   }
 
   function handleRegisterSuccess() {
     setView("success")
-    setTimeout(() => {
+    successTimerRef.current = setTimeout(() => {
       setView("status")
       fetchRegistration()
     }, SUCCESS_REDIRECT_MS)
@@ -87,6 +109,9 @@ export function QrPage() {
           registration={registration}
           onRegister={() => setView("register")}
           onRetrieve={handleRetrieve}
+          retrieving={retrieving}
+          error={error}
+          onDismissError={() => setError(null)}
         />
       ) : view === "register" ? (
         <RegisterForm
