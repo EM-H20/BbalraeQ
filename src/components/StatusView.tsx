@@ -1,19 +1,19 @@
-import { useState } from "react"
-import { useNavigate, Link } from "react-router-dom"
-import { RegistrationPhotos } from "@/components/RegistrationPhotos"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Home } from "lucide-react"
-import type { Registration } from "@/types"
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { RegistrationPhotos } from "@/components/RegistrationPhotos";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Home } from "lucide-react";
+import type { Registration } from "@/types";
 
 interface StatusViewProps {
-  qrId: string
-  registration: Registration | null
-  onRegister: () => void
-  onRetrieve: () => void
-  retrieving: boolean
-  error: string | null
-  onDismissError: () => void
+  qrId: string;
+  registration: Registration | null;
+  onRegister: () => void;
+  onRetrieve: () => void;
+  retrieving: boolean;
+  error: string | null;
+  onDismissError: () => void;
 }
 
 export function StatusView({
@@ -25,15 +25,15 @@ export function StatusView({
   error,
   onDismissError,
 }: StatusViewProps) {
-  const [confirmRetrieve, setConfirmRetrieve] = useState(false)
-  const navigate = useNavigate()
+  const [confirmRetrieve, setConfirmRetrieve] = useState(false);
+  const navigate = useNavigate();
 
   function handleRetrieveClick() {
     if (confirmRetrieve) {
-      onRetrieve()
-      setConfirmRetrieve(false)
+      onRetrieve();
+      setConfirmRetrieve(false);
     } else {
-      setConfirmRetrieve(true)
+      setConfirmRetrieve(true);
     }
   }
 
@@ -75,11 +75,23 @@ export function StatusView({
             <>
               <div className="space-y-2 text-center">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-base font-medium text-green-700">
-                  <span className="h-2 w-2 rounded-full bg-green-500" aria-hidden="true" />
+                  <span
+                    className="h-2 w-2 rounded-full bg-green-500"
+                    aria-hidden="true"
+                  />
                   현재 사용 중이에요
                 </span>
                 <p className="text-xl font-semibold text-pretty">
                   &ldquo;{registration.nickname}&rdquo;님의 세탁물이에요
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {new Date(registration.created_at).toLocaleString("ko-KR", {
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                  {" 등록"}
                 </p>
               </div>
 
@@ -94,7 +106,7 @@ export function StatusView({
                 </Button>
                 <Button
                   onClick={handleRetrieveClick}
-                  variant={confirmRetrieve ? "destructive" : "outline"}
+                  variant={confirmRetrieve ? "destructive" : "secondary"}
                   className="w-full"
                   size="lg"
                   disabled={retrieving}
@@ -108,9 +120,9 @@ export function StatusView({
                 {confirmRetrieve && !retrieving ? (
                   <Button
                     onClick={() => setConfirmRetrieve(false)}
-                    variant="ghost"
+                    variant="outline"
                     className="w-full"
-                    size="sm"
+                    size="lg"
                   >
                     취소
                   </Button>
@@ -121,7 +133,10 @@ export function StatusView({
             <>
               <div className="py-8 text-center">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-base font-medium text-muted-foreground">
-                  <span className="h-2 w-2 rounded-full bg-gray-400" aria-hidden="true" />
+                  <span
+                    className="h-2 w-2 rounded-full bg-gray-400"
+                    aria-hidden="true"
+                  />
                   지금 사용할 수 있어요!
                 </span>
               </div>
@@ -138,13 +153,13 @@ export function StatusView({
         서비스 이용 시{" "}
         <Link to="/policy?tab=terms" className="underline">
           이용약관
-        </Link>
-        {" "}및{" "}
+        </Link>{" "}
+        및{" "}
         <Link to="/policy?tab=privacy" className="underline">
           개인정보처리방침
         </Link>
         에 동의한 것으로 간주합니다.
       </p>
     </div>
-  )
+  );
 }

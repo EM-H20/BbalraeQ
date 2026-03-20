@@ -1,14 +1,19 @@
 interface RegistrationPhotosProps {
-  basketImageUrl: string
-  washerImageUrl?: string
+  basketImageUrl: string;
+  washerImageUrl?: string;
 }
 
-export function RegistrationPhotos({ basketImageUrl, washerImageUrl }: RegistrationPhotosProps) {
+export function RegistrationPhotos({
+  basketImageUrl,
+  washerImageUrl,
+}: RegistrationPhotosProps) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-5">
       {washerImageUrl ? (
         <div className="space-y-1.5">
-          <p className="text-sm font-medium text-muted-foreground">세탁기</p>
+          <p className="text-base font-semibold text-muted-foreground">
+            세탁기
+          </p>
           <div className="overflow-hidden rounded-lg">
             <img
               src={washerImageUrl}
@@ -20,7 +25,7 @@ export function RegistrationPhotos({ basketImageUrl, washerImageUrl }: Registrat
         </div>
       ) : null}
       <div className="space-y-1.5">
-        <p className="text-sm font-medium text-muted-foreground">바구니</p>
+        <p className="text-base font-semibold text-muted-foreground">바구니</p>
         <div className="overflow-hidden rounded-lg">
           <img
             src={basketImageUrl}
@@ -34,5 +39,5 @@ export function RegistrationPhotos({ basketImageUrl, washerImageUrl }: Registrat
         </p>
       </div>
     </div>
-  )
+  );
 }
