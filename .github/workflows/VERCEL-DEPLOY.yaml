@@ -1,0 +1,81 @@
+# ===================================================================
+# Vercel 자동 배포
+# ===================================================================
+#
+# deploy 브랜치에 push 시 Vercel에 프로덕션 배포합니다.
+# main → deploy 머지 후 자동으로 트리거됩니다.
+#
+# ===================================================================
+# 🔑 필수 GitHub Secrets
+# ===================================================================
+# VERCEL_TOKEN: Vercel 개인 액세스 토큰
+#   → https://vercel.com/account/tokens 에서 생성
+#
+# VERCEL_ORG_ID: Vercel 팀/개인 Organization ID
+#   → vercel link 실행 후 .vercel/project.json 에서 확인
+#
+# VERCEL_PROJECT_ID: Vercel 프로젝트 ID
+#   → vercel link 실행 후 .vercel/project.json 에서 확인
+# ===================================================================
+
+name: VERCEL-DEPLOY
+
+on:
+  push:
+    branches:
+      - deploy
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  deploy:
+    name: Vercel 프로덕션 배포
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Vercel CLI 설치
+        run: npm install -g vercel
+
+      - name: Vercel 프로젝트 설정 Pull
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: 프로덕션 빌드
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: 프로덕션 배포
+        id: deploy
+        run: |
+          URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$URL" >> $GITHUB_OUTPUT
+          echo "✅ 배포 완료: $URL"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: 배포 결과 요약
+        run: |
+          echo "### 🚀 Vercel 배포 완료" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| 항목 | 값 |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-----|" >> $GITHUB_STEP_SUMMARY
+          echo "| URL | ${{ steps.deploy.outputs.url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 브랜치 | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| 커밋 | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| 시간 | $(date '+%Y-%m-%d %H:%M:%S UTC') |" >> $GITHUB_STEP_SUMMARY
