@@ -27,6 +27,7 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
   const [washerPhoto, setWasherPhoto] = useState<PhotoState>(EMPTY_PHOTO)
   const [basketPhoto, setBasketPhoto] = useState<PhotoState>(EMPTY_PHOTO)
   const [submitting, setSubmitting] = useState(false)
+  const [processing, setProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const washerCameraRef = useRef<HTMLInputElement>(null)
@@ -36,7 +37,7 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
 
   const trimmedNickname = nickname.trim()
   const nicknameValid = trimmedNickname.length >= 2 && trimmedNickname.length <= 10
-  const canSubmit = nicknameValid && washerPhoto.file && basketPhoto.file && !submitting
+  const canSubmit = nicknameValid && washerPhoto.file && basketPhoto.file && !submitting && !processing
 
   // Object URL cleanup on unmount
   const washerPreviewRef = useRef<string | null>(null)
@@ -57,7 +58,7 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
     }
   }, [])
 
-  function handleFileChange(
+  async function handleFileChange(
     e: React.ChangeEvent<HTMLInputElement>,
     setter: typeof setWasherPhoto,
     current: PhotoState,
@@ -65,7 +66,22 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
     const selected = e.target.files?.[0]
     if (!selected) return
     if (current.preview) URL.revokeObjectURL(current.preview)
-    setter({ file: selected, preview: URL.createObjectURL(selected) })
+
+    setProcessing(true)
+    try {
+      const compressed = await compressImage(selected)
+      setter({ file: compressed, preview: URL.createObjectURL(compressed) })
+      setError(null)
+    } catch (err) {
+      if (err instanceof Error && err.message === "HEIC_NOT_SUPPORTED") {
+        setError("HEIC 형식은 지원되지 않아요. 카메라로 직접 찍거나 JPG/PNG 사진을 선택해주세요.")
+        setter(EMPTY_PHOTO)
+      } else {
+        setter({ file: selected, preview: URL.createObjectURL(selected) })
+      }
+    } finally {
+      setProcessing(false)
+    }
   }
 
   function handleFileRemove(
@@ -81,13 +97,12 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
   }
 
   async function uploadImage(file: File, prefix: string) {
-    const compressed = await compressImage(file)
-    const ext = compressed.name.split(".").pop() ?? "jpg"
+    const ext = file.name.split(".").pop() ?? "jpg"
     const filePath = `${qrId}/${prefix}_${Date.now()}.${ext}`
 
     const { error: uploadError } = await supabase.storage
       .from("baskets")
-      .upload(filePath, compressed)
+      .upload(filePath, file)
 
     if (uploadError) throw uploadError
 
@@ -140,7 +155,7 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
 
       onSuccess()
     } catch (err) {
-      console.error("등록 실패:", err)
+      void err
       setError("등록에 실패했어요. 다시 시도해주세요.")
     } finally {
       setSubmitting(false)
@@ -185,6 +200,7 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
               label="세탁기 사진"
               placeholder="사용 중인 세탁기 사진을 찍어주세요"
               photo={washerPhoto}
+              processing={processing}
               onFileChange={(e) => handleFileChange(e, setWasherPhoto, washerPhoto)}
               onRemove={() =>
                 handleFileRemove(setWasherPhoto, washerPhoto, washerCameraRef, washerGalleryRef)
@@ -198,6 +214,7 @@ export function RegisterForm({ qrId, onSuccess, onCancel }: RegisterFormProps) {
               label="바구니 사진"
               placeholder="바구니 사진을 찍어주세요"
               photo={basketPhoto}
+              processing={processing}
               onFileChange={(e) => handleFileChange(e, setBasketPhoto, basketPhoto)}
               onRemove={() =>
                 handleFileRemove(setBasketPhoto, basketPhoto, basketCameraRef, basketGalleryRef)
@@ -222,6 +239,7 @@ function PhotoUpload({
   label,
   placeholder,
   photo,
+  processing,
   onFileChange,
   onRemove,
   cameraRef,
@@ -230,6 +248,7 @@ function PhotoUpload({
   label: string
   placeholder: string
   photo: PhotoState
+  processing: boolean
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   onRemove: () => void
   cameraRef: React.RefObject<HTMLInputElement | null>
@@ -238,7 +257,12 @@ function PhotoUpload({
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
-      {photo.preview ? (
+      {processing && !photo.preview ? (
+        <div className="flex aspect-video w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-muted/30">
+          <div className="h-6 w-6 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+          <p className="text-sm text-muted-foreground">사진 처리 중…</p>
+        </div>
+      ) : photo.preview ? (
         <div className="relative overflow-hidden rounded-lg">
           <img
             src={photo.preview}
