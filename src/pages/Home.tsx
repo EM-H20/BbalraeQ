@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { QrCode, Camera, Package } from "lucide-react";
 import washingMachine from "@/assets/washing_machine.png";
@@ -108,6 +109,19 @@ export function Home() {
             </a>
           </CardContent>
         </Card>
+
+        {/* 동의 고지 */}
+        <p className="text-center text-xs text-muted-foreground">
+          서비스 이용 시{" "}
+          <Link to="/policy?tab=terms" className="underline">
+            이용약관
+          </Link>
+          {" "}및{" "}
+          <Link to="/policy?tab=privacy" className="underline">
+            개인정보처리방침
+          </Link>
+          에 동의한 것으로 간주합니다.
+        </p>
 
         <footer className="space-y-0.5 text-center text-muted-foreground/50">
           <p className="text-sm">&copy; 2026. Elipair All rights reserved.</p>
