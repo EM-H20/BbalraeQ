@@ -24,6 +24,14 @@ on:
   push:
     branches:
       - deploy
+  workflow_run:
+    workflows:
+      - "PROJECT-COMMON-VERSION-CONTROL"
+      - "PROJECT-COMMON-AUTO-CHANGELOG-CONTROL"
+    types:
+      - completed
+    branches:
+      - deploy
   workflow_dispatch:
 
 env:
@@ -33,6 +41,7 @@ jobs:
   deploy:
     name: Vercel 프로덕션 배포
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: 코드 체크아웃
