@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { RegistrationPhotos } from "@/components/RegistrationPhotos";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Home } from "lucide-react";
@@ -149,17 +150,7 @@ export function StatusView({
         </CardContent>
       </Card>
 
-      <p className="mt-4 w-full max-w-md text-center text-xs text-muted-foreground">
-        서비스 이용 시{" "}
-        <Link to="/policy?tab=terms" className="underline">
-          이용약관
-        </Link>{" "}
-        및{" "}
-        <Link to="/policy?tab=privacy" className="underline">
-          개인정보처리방침
-        </Link>
-        에 동의한 것으로 간주합니다.
-      </p>
+      <Footer />
     </div>
   );
 }

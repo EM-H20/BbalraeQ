@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import { Footer } from "@/components/Footer";
 import { QrCode, Camera, Package } from "lucide-react";
 import washingMachine from "@/assets/washing_machine.png";
 
@@ -110,32 +110,18 @@ export function Home() {
           </CardContent>
         </Card>
 
-        {/* 동의 고지 */}
-        <p className="text-center text-xs text-muted-foreground">
-          서비스 이용 시{" "}
-          <Link to="/policy?tab=terms" className="underline">
-            이용약관
-          </Link>
-          {" "}및{" "}
-          <Link to="/policy?tab=privacy" className="underline">
-            개인정보처리방침
-          </Link>
-          에 동의한 것으로 간주합니다.
-        </p>
+        <Footer />
 
-        <footer className="space-y-0.5 text-center text-muted-foreground/50">
-          <p className="text-sm">&copy; 2026. Elipair All rights reserved.</p>
-          <p className="text-xs">
-            <a
-              href="https://www.flaticon.com/kr/free-icons/-"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline"
-            >
-              아이콘 제작자: smashingstocks - Flaticon
-            </a>
-          </p>
-        </footer>
+        <p className="text-center text-xs text-muted-foreground/50">
+          <a
+            href="https://www.flaticon.com/kr/free-icons/-"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            아이콘 제작자: smashingstocks - Flaticon
+          </a>
+        </p>
       </div>
     </div>
   );
