@@ -113,14 +113,27 @@ export function Home() {
         <Footer />
 
         <p className="text-center text-xs text-muted-foreground/50">
+          Designed by{" "}
           <a
-            href="https://www.flaticon.com/kr/free-icons/-"
+            href="https://www.flaticon.com/kr/free-icon/washing-machine_5014793?term=%EC%84%B8%ED%83%81%EA%B8%B0&page=2&position=16&origin=search&related_id=5014793"
             target="_blank"
             rel="noopener noreferrer"
             className="underline"
           >
-            아이콘 제작자: smashingstocks - Flaticon
-          </a>
+            smashingstocks
+          </a>{" "}
+          from Flaticon
+          <br />
+          Designed by{" "}
+          <a
+            href="https://www.flaticon.com/kr/free-icon/laundry-machine_3322056?term=%EC%84%B8%ED%83%81%EA%B8%B0&page=1&position=3&origin=search&related_id=3322056"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            Eucalyp
+          </a>{" "}
+          from Flaticon
         </p>
       </div>
     </div>

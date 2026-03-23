@@ -1,10 +1,11 @@
 # 빨래큐 (BbalraeQ)
 
-종근당 학사 공용 세탁실 QR 기반 세탁물 식별 서비스
+QR 기반 세탁물 식별 서비스
 
 ## 소개
 
 세탁기에 붙인 QR을 스캔하면 누구의 세탁물인지 + 바구니가 뭔지 바로 확인할 수 있는 웹 서비스입니다.
+종근당 학사(고촌학사) 공용 세탁실에서 시작했지만, QR ID만 정하면 어디서든 사용할 수 있습니다.
 
 ### 핵심 기능
 
@@ -12,6 +13,7 @@
 - 다른 사람이 QR 스캔 → 바구니 확인 → 세탁물을 바구니에 넣어줌
 - 세탁물 회수 완료 → 데이터 자동 삭제
 - 24시간 미변경 시 자동 만료
+- 이용약관 및 개인정보처리방침 페이지 내장
 
 ### 설계 원칙
 
@@ -23,13 +25,13 @@
 
 | 영역         | 기술                            |
 | ------------ | ------------------------------- |
-| 프론트엔드   | React 19 + TypeScript + Vite    |
+| 프론트엔드   | React 19 + TypeScript + Vite 8  |
 | 스타일링     | Tailwind CSS v4 + shadcn/ui     |
 | 라우팅       | React Router v7                 |
 | DB + Storage | Supabase (PostgreSQL + Storage) |
 | 이미지 압축  | browser-image-compression       |
 | 배포         | Vercel                          |
-| CI/CD        | GitHub Actions                  |
+| CI/CD        | GitHub Actions (Node 22)        |
 
 ## 시작하기
 
@@ -70,10 +72,10 @@ npm run preview
 
 ### Vercel (프로덕션)
 
-`deploy` 브랜치에 push하면 GitHub Actions를 통해 Vercel에 자동 배포됩니다.
+`main` → `deploy` 브랜치로 PR 머지 시 GitHub Actions를 통해 Vercel에 자동 배포됩니다.
 
 ```
-main에서 개발 → deploy 브랜치로 머지 → 자동 배포
+main에서 개발 → deploy로 PR 생성 → 머지 → 자동 배포
 ```
 
 #### 필수 GitHub Secrets
@@ -96,6 +98,7 @@ vercel deploy --prod
 | ---------- | ---------------------------------- |
 | `/`        | 서비스 안내 (Home)                 |
 | `/q/:qrId` | QR 스캔 후 페이지 (등록/조회/회수) |
+| `/policy`  | 이용약관 / 개인정보처리방침        |
 | `*`        | 404 Not Found                      |
 
 ## QR 코드 생성
@@ -109,17 +112,20 @@ vercel deploy --prod
 ```
 
 QR ID는 영문, 숫자, `-`, `_` 조합으로 자유롭게 지정할 수 있습니다.
+DB에 미리 등록할 필요 없이, 해당 URL로 접속해 등록하면 자동으로 생성됩니다.
 
 ## 프로젝트 구조
 
 ```
 src/
-├── pages/           # 라우팅 레이어
+├── pages/           # 라우팅 레이어 (Home, QrPage, PolicyPage, NotFound)
 ├── components/      # UI 컴포넌트
 │   └── ui/          # shadcn/ui 기본 컴포넌트
+├── data/            # 정책 JSON 데이터 (이용약관, 개인정보처리방침)
 ├── lib/             # 유틸리티 (이미지 압축, 등록 로직)
 ├── utils/           # Supabase 클라이언트
-└── types/           # TypeScript 인터페이스
+├── types/           # TypeScript 인터페이스
+└── assets/          # 정적 에셋 (아이콘 이미지)
 ```
 
 ## 문서
@@ -129,6 +135,12 @@ src/
 - [폴더 구조](docs/02_FOLDER_STRUCTURE.md)
 - [코드 컨벤션](docs/03_CODE_CONVENTIONS.md)
 - [구현 워크플로우](docs/WORKFLOW.md)
+- [이용약관](docs/Terms_of_Service.md)
+- [개인정보처리방침](docs/Privacy_Policy.md)
+
+## 라이선스
+
+Copyright 2026. Elipair All rights reserved.
 
 ---
 
