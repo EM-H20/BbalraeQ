@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Footer } from "@/components/Footer";
-import { QrCode, Camera, Package, Copy, Check, ExternalLink } from "lucide-react";
+import {
+  QrCode,
+  Camera,
+  Package,
+  Copy,
+  Check,
+  ExternalLink,
+} from "lucide-react";
 import washingMachine from "@/assets/washing_machine.png";
 
 const QR_ID_PATTERN = /^[a-zA-Z0-9_-]*$/;
@@ -47,15 +54,15 @@ function UrlGenerator() {
   };
 
   return (
-    <Card>
+    <Card className="py-0">
       <CardContent className="space-y-3 p-5">
         <h2 className="text-base font-semibold text-muted-foreground">
           주소 만들기
         </h2>
         <p className="text-sm text-muted-foreground">
-          세탁기 이름을 입력하면 주소가 만들어져요.
+          세탁기 이름을 입력하면 주소가 만들어져요
           <br />
-          영문, 숫자, -, _ 만 사용할 수 있어요.
+          영문, 숫자, -, _ 만 사용할 수 있어요
         </p>
         <input
           type="text"
@@ -116,7 +123,7 @@ export function Home() {
         </div>
 
         {/* 사용법 */}
-        <Card>
+        <Card className="py-0">
           <CardContent className="space-y-5 p-5">
             <h2 className="text-base font-semibold text-muted-foreground">
               사용 방법
@@ -145,13 +152,13 @@ export function Home() {
         <UrlGenerator />
 
         {/* QR 코드 만들기 */}
-        <Card>
+        <Card className="py-0">
           <CardContent className="space-y-3 p-5">
             <h2 className="text-base font-semibold text-muted-foreground">
               QR 코드 만들기
             </h2>
             <p className="text-sm text-muted-foreground">
-              위에서 생성한 주소로 QR 코드를 만들어 세탁기에 붙이세요.
+              위에서 생성한 주소로 QR 코드를 만들어 세탁기에 붙이세요
             </p>
             <a
               href="https://qr.naver.com/"

@@ -24,12 +24,19 @@ interface PhotoState {
 const EMPTY_PHOTO: PhotoState = { file: null, preview: null };
 const QR_ID_PATTERN = /^[a-zA-Z0-9_-]+$/;
 
-export function RegisterForm({ qrId, hasExisting, onSuccess, onCancel }: RegisterFormProps) {
+export function RegisterForm({
+  qrId,
+  hasExisting,
+  onSuccess,
+  onCancel,
+}: RegisterFormProps) {
   const [nickname, setNickname] = useState("");
   const [washerPhoto, setWasherPhoto] = useState<PhotoState>(EMPTY_PHOTO);
   const [basketPhoto, setBasketPhoto] = useState<PhotoState>(EMPTY_PHOTO);
   const [submitting, setSubmitting] = useState(false);
-  const [processing, setProcessing] = useState<"washer" | "basket" | null>(null);
+  const [processing, setProcessing] = useState<"washer" | "basket" | null>(
+    null,
+  );
   const [confirmReplace, setConfirmReplace] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -105,7 +112,7 @@ export function RegisterForm({ qrId, hasExisting, onSuccess, onCancel }: Registe
       } catch (err) {
         if (err instanceof Error && err.message === "HEIC_NOT_SUPPORTED") {
           setError(
-            "HEIC 형식은 지원되지 않아요. 카메라로 직접 찍거나 JPG/PNG 사진을 선택해주세요.",
+            "HEIC 형식은 지원되지 않아요. 카메라로 직접 찍거나 JPG/PNG 사진을 선택해주세요!",
           );
           setter(EMPTY_PHOTO);
         } else {
@@ -164,7 +171,7 @@ export function RegisterForm({ qrId, hasExisting, onSuccess, onCancel }: Registe
     if (!canSubmit) return;
 
     if (!QR_ID_PATTERN.test(qrId)) {
-      setError("잘못된 QR 코드입니다.");
+      setError("잘못된 QR 코드입니다. 주소를 다시 확인해주세요!");
       return;
     }
 
@@ -211,7 +218,7 @@ export function RegisterForm({ qrId, hasExisting, onSuccess, onCancel }: Registe
       onSuccess();
     } catch (err) {
       void err;
-      setError("등록에 실패했어요. 다시 시도해주세요.");
+      setError("등록에 실패했어요. 다시 시도해주세요!");
     } finally {
       setSubmitting(false);
     }
@@ -231,7 +238,7 @@ export function RegisterForm({ qrId, hasExisting, onSuccess, onCancel }: Registe
         <h1 className="text-2xl font-bold tracking-tight">내 세탁물 등록</h1>
       </header>
 
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md py-0">
         <CardContent className="p-5">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* 닉네임 */}
@@ -254,6 +261,8 @@ export function RegisterForm({ qrId, hasExisting, onSuccess, onCancel }: Registe
                 </p>
               ) : null}
             </div>
+
+            <hr className="border-border" />
 
             {/* 세탁기 사진 */}
             <MemoizedPhotoUpload
@@ -296,7 +305,11 @@ export function RegisterForm({ qrId, hasExisting, onSuccess, onCancel }: Registe
               className="w-full"
               size="lg"
             >
-              {submitting ? "등록 중…" : confirmReplace ? "교체하고 등록하기" : "등록 완료!"}
+              {submitting
+                ? "등록 중…"
+                : confirmReplace
+                  ? "교체하고 등록하기"
+                  : "등록 완료!"}
             </Button>
 
             {confirmReplace && !submitting ? (
