@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Footer } from "@/components/Footer";
-import { QrCode, Camera, Package } from "lucide-react";
+import { QrCode, Camera, Package, Copy, Check, ExternalLink } from "lucide-react";
 import washingMachine from "@/assets/washing_machine.png";
+
+const QR_ID_PATTERN = /^[a-zA-Z0-9_-]*$/;
+const BASE_URL = `${window.location.origin}/q/`;
 
 const STEPS = [
   {
@@ -20,6 +24,77 @@ const STEPS = [
     description: "다른 분이 바구니에 넣어드려요",
   },
 ] as const;
+
+function UrlGenerator() {
+  const [name, setName] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const fullUrl = `${BASE_URL}${name}`;
+  const isValid = name.length > 0 && QR_ID_PATTERN.test(name);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (QR_ID_PATTERN.test(value)) {
+      setName(value);
+      setCopied(false);
+    }
+  };
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(fullUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <Card>
+      <CardContent className="space-y-3 p-5">
+        <h2 className="text-base font-semibold text-muted-foreground">
+          주소 만들기
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          세탁기 이름을 입력하면 주소가 만들어져요.
+          <br />
+          영문, 숫자, -, _ 만 사용할 수 있어요.
+        </p>
+        <input
+          type="text"
+          value={name}
+          onChange={handleChange}
+          placeholder="예: W1, room3, my-washer_01"
+          className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
+        />
+        {isValid && (
+          <>
+            <div className="rounded-lg bg-muted/50 p-3 text-sm font-mono break-all">
+              {fullUrl}
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleCopy}
+                className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
+              >
+                {copied ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
+                {copied ? "복사됨" : "복사"}
+              </button>
+              <a
+                href={fullUrl}
+                className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border px-4 py-2.5 text-sm font-medium"
+              >
+                <ExternalLink className="h-4 w-4" />
+                바로가기
+              </a>
+            </div>
+          </>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 export function Home() {
   return (
@@ -66,39 +141,18 @@ export function Home() {
           </CardContent>
         </Card>
 
-        {/* 안내 */}
+        {/* URL 생성기 */}
+        <UrlGenerator />
+
+        {/* QR 코드 만들기 */}
         <Card>
           <CardContent className="space-y-3 p-5">
             <h2 className="text-base font-semibold text-muted-foreground">
               QR 코드 만들기
             </h2>
             <p className="text-sm text-muted-foreground">
-              아래 형식으로 QR 코드를 생성해 세탁기에 붙이세요.
-              <br />
-              영문, 숫자, -, _ 조합으로 자유롭게 지정할 수 있어요.
+              위에서 생성한 주소로 QR 코드를 만들어 세탁기에 붙이세요.
             </p>
-            <div className="rounded-lg bg-muted/50 p-3 text-sm font-mono space-y-1">
-              <p>
-                <span className="text-muted-foreground">세탁기 1호 →</span>{" "}
-                웹주소/q/W1
-              </p>
-              <p>
-                <span className="text-muted-foreground">세탁기 2호 →</span>{" "}
-                웹주소/q/W2
-              </p>
-              <p>
-                <span className="text-muted-foreground">건조기 1호 →</span>{" "}
-                웹주소/q/D1
-              </p>
-              <p>
-                <span className="text-muted-foreground">3층 세탁실 →</span>{" "}
-                웹주소/q/room3
-              </p>
-              <p>
-                <span className="text-muted-foreground">자유 형식 →</span>{" "}
-                웹주소/q/my-washer_01
-              </p>
-            </div>
             <a
               href="https://qr.naver.com/"
               target="_blank"
