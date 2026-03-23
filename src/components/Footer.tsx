@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 
 export function Footer() {
   return (
@@ -7,8 +7,8 @@ export function Footer() {
         서비스 이용 시{" "}
         <Link to="/policy?tab=terms" className="underline">
           이용약관
-        </Link>
-        {" "}및{" "}
+        </Link>{" "}
+        및{" "}
         <Link to="/policy?tab=privacy" className="underline">
           개인정보처리방침
         </Link>
@@ -18,5 +18,5 @@ export function Footer() {
         &copy; 2026. Elipair All rights reserved.
       </p>
     </footer>
-  )
+  );
 }

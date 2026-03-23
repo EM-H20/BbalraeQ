@@ -41,7 +41,7 @@ export function QrPage() {
 
     if (fetchError) {
       void fetchError;
-      setError("데이터를 불러오지 못했어요. 다시 시도해주세요.");
+      setError("데이터를 불러오지 못했어요. 다시 시도해주세요!");
       setLoading(false);
       return;
     }
@@ -77,7 +77,7 @@ export function QrPage() {
       setRegistration(null);
     } catch (err) {
       void err;
-      setError("회수에 실패했어요. 다시 시도해주세요.");
+      setError("회수에 실패했어요. 다시 시도해주세요!");
     } finally {
       setRetrieving(false);
     }
