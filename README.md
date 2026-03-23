@@ -147,6 +147,6 @@ Copyright 2026. Elipair All rights reserved.
 <!-- AUTO-VERSION-SECTION: DO NOT EDIT MANUALLY -->
 
 <!-- AUTO-VERSION-SECTION: DO NOT EDIT MANUALLY -->
-## 최신 버전 : v0.0.13 (2026-03-23)
+## 최신 버전 : v0.0.14 (2026-03-23)
 
 [전체 버전 기록 보기](CHANGELOG.md)
