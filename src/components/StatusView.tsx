@@ -57,7 +57,7 @@ export function StatusView({
         </span>
       </header>
 
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md py-0">
         <CardContent className="space-y-5 p-5">
           {error ? (
             <div className="flex items-center justify-between rounded-lg bg-destructive/10 px-3 py-2">

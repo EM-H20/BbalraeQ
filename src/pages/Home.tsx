@@ -47,7 +47,7 @@ function UrlGenerator() {
   };
 
   return (
-    <Card>
+    <Card className="py-0">
       <CardContent className="space-y-3 p-5">
         <h2 className="text-base font-semibold text-muted-foreground">
           주소 만들기
@@ -116,7 +116,7 @@ export function Home() {
         </div>
 
         {/* 사용법 */}
-        <Card>
+        <Card className="py-0">
           <CardContent className="space-y-5 p-5">
             <h2 className="text-base font-semibold text-muted-foreground">
               사용 방법
@@ -145,7 +145,7 @@ export function Home() {
         <UrlGenerator />
 
         {/* QR 코드 만들기 */}
-        <Card>
+        <Card className="py-0">
           <CardContent className="space-y-3 p-5">
             <h2 className="text-base font-semibold text-muted-foreground">
               QR 코드 만들기
