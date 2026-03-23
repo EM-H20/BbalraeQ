@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Footer } from "@/components/Footer";
-import { QrCode, Camera, Package, Copy, Check, ExternalLink } from "lucide-react";
+import {
+  QrCode,
+  Camera,
+  Package,
+  Copy,
+  Check,
+  ExternalLink,
+} from "lucide-react";
 import washingMachine from "@/assets/washing_machine.png";
 
 const QR_ID_PATTERN = /^[a-zA-Z0-9_-]*$/;
@@ -53,9 +60,9 @@ function UrlGenerator() {
           주소 만들기
         </h2>
         <p className="text-sm text-muted-foreground">
-          세탁기 이름을 입력하면 주소가 만들어져요.
+          세탁기 이름을 입력하면 주소가 만들어져요
           <br />
-          영문, 숫자, -, _ 만 사용할 수 있어요.
+          영문, 숫자, -, _ 만 사용할 수 있어요
         </p>
         <input
           type="text"
@@ -151,7 +158,7 @@ export function Home() {
               QR 코드 만들기
             </h2>
             <p className="text-sm text-muted-foreground">
-              위에서 생성한 주소로 QR 코드를 만들어 세탁기에 붙이세요.
+              위에서 생성한 주소로 QR 코드를 만들어 세탁기에 붙이세요
             </p>
             <a
               href="https://qr.naver.com/"
